@@ -36,7 +36,7 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 # Flask-SQLAlchemy: Its an extension for Flask that adds application support for SQLAlchemy.
 # Setting the database that is going to be used in the connection:
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI', default='sqlite:///to_do_list.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', default='sqlite:///to_do_list.db')
 # As we do not need to track the modifications, what can span extra memory, we can set this off (when the app is finish-
 # ed, try switching it on).
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
