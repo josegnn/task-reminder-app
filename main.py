@@ -17,7 +17,7 @@ from flask_apscheduler import APScheduler
 import smtplib
 from dotenv import load_dotenv
 
-load_dotenv("C:/Users/Usuario/Desktop/DEVELOPMENT/.env.txt")
+load_dotenv(".env.txt")
 
 sender_email = os.environ.get("SENDER_EMAIL")
 sender_password = os.environ.get("SENDER_PASSWORD")
