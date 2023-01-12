@@ -97,8 +97,8 @@ class Detail(db.Model, Base):
     user_id = db.Column(db.Integer, ForeignKey('users.id'))
     to_do_id = db.Column(db.Integer, ForeignKey('to_dos.id'))
 
-    subtask = db.Column(db.Text(500), nullable=False)
-    subtask_details = db.Column(db.Text(500), nullable=True)
+    subtask = db.Column(db.Text, nullable=False)
+    subtask_details = db.Column(db.Text, nullable=True)
 
     # The lines bellow link the current table to the others tables in database.
     user = relationship("User", back_populates="to_do_detail")
