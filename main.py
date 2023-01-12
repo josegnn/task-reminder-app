@@ -296,8 +296,7 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-@scheduler.task('cron', id='send_email', timezone='America/Sao_Paulo',
-                hour='*', minute='0-59', day='*', jitter=120)
+@scheduler.task('cron', id='send_email', timezone='America/Sao_Paulo', hour='*', minute='0-59', day='*', jitter=120)
 def job1():
     with smtplib.SMTP("smtp.gmail.com", port=587) as server:
         server.starttls()
@@ -316,9 +315,12 @@ def job1():
                             if today <= task.due_date <= (today + datetime.timedelta(days=7)):
                                 message += f"{n}. {task.due_date}: {task.task_name}\n"
                                 n += 1
-                    server.sendmail(from_addr=sender_email, to_addrs=to_address, msg=message)
+                    if n > 1:
+                        server.sendmail(from_addr=sender_email, to_addrs=to_address, msg=message)
                 else:
                     pass
+
+scheduler.start()
 
 if __name__ == "__main__":
     app.run(debug=True, port=os.getenv("PORT", default=5000))
