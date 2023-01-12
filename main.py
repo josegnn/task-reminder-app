@@ -297,7 +297,7 @@ def logout():
     return redirect(url_for('home'))
 
 @scheduler.task('cron', id='send_email', timezone='America/Sao_Paulo',
-                hour=12, minute=40, day='*', jitter=120, max_instances=1, misfire_grace_time=10000)
+                hour='*', minute=40, day='*', jitter=120, max_instances=1, misfire_grace_time=10000)
 def job1():
     with smtplib.SMTP("smtp.gmail.com", port=587) as server:
         server.starttls()
@@ -307,7 +307,7 @@ def job1():
             for user in users:
                 to_address = user.email
                 tasks = ToDo.query.filter_by(user_id=user.id).order_by(ToDo.due_date).all()
-                message = "Subject: Tasks Reminder\n\nTASKS TO DO\n\n"
+                message = f"Subject: Tasks Reminder\n\nTASKS TO DO {datetime.datetime.now()}\n\n"
                 if tasks:
                     for task in tasks:
                         today = datetime.datetime.today()
