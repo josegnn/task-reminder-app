@@ -299,6 +299,7 @@ def logout():
 
 @scheduler.task('interval', id='do_something', seconds=60, max_instances=1, misfire_grace_time=10000)
 def job1():
+    print(sender_password, sender_email)
     with smtplib.SMTP("smtp.gmail.com", port=587) as server:
         server.starttls()
         server.login(user=sender_email, password=sender_password)
