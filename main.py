@@ -308,12 +308,12 @@ def job1():
                 tasks = ToDo.query.filter_by(user_id=user.id).order_by(ToDo.due_date).all()
                 message = f"Subject: Tasks Reminder\n\nTASKS TO DO {datetime.datetime.now()}\n\n"
                 if tasks:
+                    n = 1
                     for task in tasks:
                         today = datetime.datetime.today()
-                        n = 1
                         if not task.completed:
                             if today <= task.due_date <= (today + datetime.timedelta(days=7)):
-                                message += f"{n}. {task.due_date}: {task.task_name}\n"
+                                message += f"{n}. {str(task.due_date).split(' ')[0]}: {task.task_name}\n"
                                 n += 1
                     if n > 1:
                         server.sendmail(from_addr=sender_email, to_addrs=to_address, msg=message)
