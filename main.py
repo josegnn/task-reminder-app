@@ -297,7 +297,7 @@ def logout():
     return redirect(url_for('home'))
 
 @scheduler.task('cron', id='send_email', timezone='America/Sao_Paulo',
-                hour='*', minute=40, day='*', jitter=120, max_instances=1, misfire_grace_time=10000)
+                hour='*', minute=1, day='*', jitter=120)
 def job1():
     with smtplib.SMTP("smtp.gmail.com", port=587) as server:
         server.starttls()
