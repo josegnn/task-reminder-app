@@ -1,0 +1,53 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+{% include 'header.html' %}
+<div class="center-div">
+<div class="form-popup" id="myForm">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+    <ul>
+        {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+{{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+    {{ ckeditor.load(pkg_type="basic") }}
+    {{ ckeditor.config(name='subtask_details') }}
+        <button class="btn btn-danger" onclick="closeForm()">Close</button>
+    </div>
+    {% if sub_tasks %}
+    <h1>{{task_name}}</h1>
+    <table class="table_header">
+        <tr>
+            <th class="table_header">Status</th>
+            <th class="table_header">Name</th>
+            <th class="table_header">Notes</th>
+            <th class="table_header">Edit</th>
+            <th class="table_header">Delete</th>
+        </tr>
+        {% for sub_task in sub_tasks %}
+        <tr>
+            {% if sub_task.completed %}
+            <td><a class="task" href="{{url_for('completed', subtask_id=sub_task.id) }}">👍 Done</a></td>
+            {% else %}
+            <td><a class="task" href="{{url_for('completed', subtask_id=sub_task.id) }}">⏳ Ongoing</a></td>
+        {% endif %}
+            <td>{{sub_task.subtask}}</td>
+            <td class="text">{{sub_task.subtask_details | safe}}</td>
+            <td><a class="task" href="{{ url_for('edit', id=sub_task.id, type='subtask') }}">✏</a></td>
+            <td><a class="task" href="{{ url_for('delete', id=sub_task.id, table='Detail') }}">❌</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+
+
+
+    <button class="add-new btn btn-primary" onclick="openForm()">Add New Sub-Task!</button>
+</div>
+{% include 'footer.html' %}
+{% endblock %}
