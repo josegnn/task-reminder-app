@@ -324,4 +324,4 @@ def job1():
 scheduler.start()
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True, use_reloader=False)
+    app.run(debug=True, port=os.getenv("PORT", default=5000))
