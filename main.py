@@ -320,6 +320,7 @@ def job1():
                 else:
                     pass
 
+
 scheduler.start()
 
 if __name__ == "__main__":
