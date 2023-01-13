@@ -22,34 +22,30 @@
     </ul>
     {% endif %}
     {% endwith %}
-    {% if not current_user.is_authenticated %}
-    <div class="center-div-2">
-    {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
-    {% endif %}
     {% if tasks %}
         {% if some_uncompleted %}
         <h1>Not Completed</h1>
     <table class="table_header">
         <tr>
-            <th class="">Status</th>
+            <th class="status">Status</th>
             <th class="">Task</th>
-            <th class="">Due Date</th>
-            <th class="">Edit</th>
-            <th class="">Delete</th>
+            <th class="due-date">Due Date</th>
+            <th class="status">Edit</th>
+            <th class="status">Delete</th>
         </tr>
         {% for task in tasks %}
 
             {% if not task.completed %}
         <tr>
-            <td><a class="task" href="{{url_for('completed', task_id=task.id) }}">✔ Done</a></td>
-                {% if Detail.query.filter_by(to_do_id=task.id).all() %}
-                <td><a class="task" href="{{ url_for('task', task_id=task.id, name=task.task_name) }}"><span class="no_text_decoration">🔍</span> {{ task.task_name }}</a></td>
-                {% else %}
-                <td><a class="task" href="{{ url_for('task', task_id=task.id, name=task.task_name) }}">{{ task.task_name }}</a></td>
-                {% endif %}
+            <td><a class="status no_text_decoration" href="{{url_for('completed', task_id=task.id) }}">✔ Done</a></td>
+            {% if Detail.query.filter_by(to_do_id=task.id).all() %}
+                <td class="task"><a class="no_text_decoration" href="{{ url_for('task', task_id=task.id, name=task.task_name) }}"><span class="no_text_decoration">🔍</span> {{ task.task_name }}</a></td>
+            {% else %}
+                <td class="task"><a class="no_text_decoration" href="{{ url_for('task', task_id=task.id, name=task.task_name) }}">{{ task.task_name }}</a></td>
+            {% endif %}
             <td>{{ task.due_date }}</td>
-            <td class="no_text_decoration"><a class="task" href="{{ url_for('edit', id=task.id, type='task') }}">✏</a></td>
-            <td class="no_text_decoration"><a class="task" href="{{ url_for('delete', id=task.id, table='ToDo') }}">❌</a></td>
+            <td class="no_text_decoration"><a class="no_text_decoration" href="{{ url_for('edit', id=task.id, type='task') }}">✏</a></td>
+            <td class="no_text_decoration"><a class="no_text_decoration" href="{{ url_for('delete', id=task.id, table='ToDo') }}">❌</a></td>
         </tr>
             {% endif %}
         {% endfor %}
@@ -61,24 +57,24 @@
         <h1>Completed</h1>
         <table class="table_header">
         <tr>
-            <th class="">Edit Status</th>
+            <th class="status">Edit Status</th>
             <th class="">Task</th>
-            <th class="">Due Date</th>
-            <th class="">Edit</th>
-            <th class="">Delete</th>
+            <th class="due-date">Due Date</th>
+            <th class="status">Edit</th>
+            <th class="status">Delete</th>
         </tr>
         {% for task in tasks %}
         {% if task.completed %}
         <tr>
-            <td><a class="task" href="{{url_for('completed', task_id=task.id) }}">❌ Undo</a></td>
+            <td class="status"><a class="no_text_decoration" href="{{url_for('completed', task_id=task.id) }}">❌ Undo</a></td>
             {% if Detail.query.filter_by(to_do_id=task.id).all() %}
-            <td><a class="task" href="{{ url_for('task', task_id=task.id, name=task.task_name) }}"><span class="no_text_decoration">🔍</span> {{ task.task_name }}</a></td>
+                <td class="task"><a class="no_text_decoration" href="{{ url_for('task', task_id=task.id, name=task.task_name) }}"><span class="no_text_decoration">🔍</span> {{ task.task_name }}</a></td>
             {% else %}
-            <td><a class="task" href="{{ url_for('task', task_id=task.id, name=task.task_name) }}">{{ task.task_name }}</a></td>
+                <td class="task"><a class=""><a class="no_text_decoration" href="{{ url_for('task', task_id=task.id, name=task.task_name) }}">{{ task.task_name }}</a></td>
             {% endif %}
             <td>{{ task.due_date }}</td>
-            <td class="no_text_decoration"><a class="task" href="{{ url_for('edit', id=task.id, type='task') }}">✏</a></td>
-            <td class="no_text_decoration"><a class="task" href="{{ url_for('delete', id=task.id, table='ToDo') }}">❌</a></td>
+            <td class=""><a class="no_text_decoration" href="{{ url_for('edit', id=task.id, type='task') }}">✏</a></td>
+            <td class=""><a class="no_text_decoration" href="{{ url_for('delete', id=task.id, table='ToDo') }}">❌</a></td>
         </tr>
         {% endif %}
         {% endfor %}

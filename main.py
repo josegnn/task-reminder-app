@@ -161,6 +161,26 @@ def home():
                            tasks=tasks, Detail=Detail, some_completed=some_completed,
                            some_uncompleted=some_uncompleted)
 
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    form = LoginForm()
+    if request.method == "POST":
+        requested_user = User.query.filter_by(email=form.data['email']).first()
+        if requested_user:
+            if check_password_hash(requested_user.password, form.data['password']):
+                login_user(requested_user)
+                flash('Logged in successfully!', 'confirmation')
+                return redirect((url_for('home')))
+            else:
+                flash('Incorrect Password. Try Again.', 'error')
+                return render_template('login.html', form=form)
+        else:
+            flash('This e-mail does not exist. Try to register instead.', 'error')
+            return redirect(url_for('register'))
+    else:
+        return redirect(url_for('home'))
+    return render_template('login.html', form=form)
+
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
