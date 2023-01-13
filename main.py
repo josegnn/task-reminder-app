@@ -164,7 +164,7 @@ def home():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     form = LoginForm()
-    if request.method == "POST":
+    if form.validate_on_submit():
         requested_user = User.query.filter_by(email=form.data['email']).first()
         if requested_user:
             if check_password_hash(requested_user.password, form.data['password']):
@@ -177,7 +177,7 @@ def login():
         else:
             flash('This e-mail does not exist. Try to register instead.', 'error')
             return redirect(url_for('register'))
-    else:
+    if current_user.is_authenticated:
         return redirect(url_for('home'))
     return render_template('login.html', form=form)
 
