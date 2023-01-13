@@ -26,6 +26,10 @@
     right: 15px;
 }
 
+#due_date.form-control{
+    height: 4rem;
+}
+
 .form-popup .cancel {
     background-color: red;
 }
