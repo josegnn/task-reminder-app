@@ -118,48 +118,39 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 # APP ROUTES:
-@app.route('/', methods=["GET", "POST"])
+@app.route('/', methods=["GET"])
 def home():
+    if current_user.is_authenticated:
+        return redirect((url_for('my_tasks')))
+    else:
+        return render_template('index.html')
+
+
+
+@app.route('/my-tasks', methods=['POST', 'GET'])
+@login_required
+def my_tasks():
     tasks = None
     some_completed = None
     some_uncompleted = None
-    authenticated = current_user.is_authenticated
-    if authenticated:
-        form = NewTaskForm()
-        tasks = ToDo.query.order_by(ToDo.due_date).filter_by(user_id=current_user.id).all()
-        if tasks:
-            some_completed = any([task.completed for task in tasks])
-            some_uncompleted = any([task.completed == False for task in tasks])
-    else:
-        form = LoginForm()
-
+    form = NewTaskForm()
+    tasks = ToDo.query.order_by(ToDo.due_date).filter_by(user_id=current_user.id).all()
+    if tasks:
+        some_completed = any([task.completed for task in tasks])
+        some_uncompleted = any([task.completed == False for task in tasks])
     if request.method == "POST":
-        if not authenticated:
-            requested_user = User.query.filter_by(email=form.data['email']).first()
-            if requested_user:
-                if check_password_hash(requested_user.password, form.data['password']):
-                    login_user(requested_user)
-                    flash('Logged in successfully!', 'confirmation')
-                    return redirect((url_for('home')))
-                else:
-                    flash('Incorrect Password. Try Again.', 'error')
-                    return render_template('index.html', form=form)
-            else:
-                flash('This e-mail does not exist. Try to register instead.', 'error')
-                return redirect(url_for('register'))
-        else:
-            new_task = form.data
-            del new_task['csrf_token'], new_task['submit']
-            new_task['user_id'] = current_user.id
-            new_task['completed'] = False
-            with app.app_context():
-                new_task = ToDo(**new_task)
-                db.session.add(new_task)
-                db.session.commit()
-            return redirect(url_for(endpoint='home'))
-    return render_template('index.html', form=form,
-                           tasks=tasks, Detail=Detail, some_completed=some_completed,
+        new_task = form.data
+        del new_task['csrf_token'], new_task['submit']
+        new_task['user_id'] = current_user.id
+        new_task['completed'] = False
+        with app.app_context():
+            new_task = ToDo(**new_task)
+            db.session.add(new_task)
+            db.session.commit()
+        return redirect(url_for(endpoint='home'))
+    return render_template('my-tasks.html', form=form, tasks=tasks, Detail=Detail, some_completed=some_completed,
                            some_uncompleted=some_uncompleted)
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():

@@ -1,0 +1,85 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+{% include 'header.html' %}
+<div class="center-div">
+
+<div class="form-popup" id="myForm">
+    {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+    <button class="btn btn-danger" onclick="closeForm()">Close</button>
+</div>
+
+<button id="openForm" class="add-new btn btn-primary" onclick="openForm()">Add New Task!</button>
+
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+{% if tasks %}
+    {% if some_uncompleted %}
+        <h1>Not Completed</h1>
+        <table class="table_header">
+            <tr>
+                <th class="status">Status</th>
+                <th class="">Task</th>
+                <th class="due-date">Due Date</th>
+                <th class="status">Edit</th>
+                <th class="status">Delete</th>
+            </tr>
+            {% for task in tasks %}
+                {% if not task.completed %}
+                    <tr>
+                        <td><a class="status no_text_decoration" href="{{url_for('completed', task_id=task.id) }}">✔ Done</a></td>
+                        {% if Detail.query.filter_by(to_do_id=task.id).all() %}
+                            <td class="task"><a class="no_text_decoration" href="{{ url_for('task', task_id=task.id, name=task.task_name) }}"><span class="no_text_decoration">🔍</span> {{ task.task_name }}</a></td>
+                        {% else %}
+                            <td class="task"><a class="no_text_decoration" href="{{ url_for('task', task_id=task.id, name=task.task_name) }}">{{ task.task_name }}</a></td>
+                        {% endif %}
+                        <td>{{ task.due_date }}</td>
+                        <td class="no_text_decoration"><a class="no_text_decoration" href="{{ url_for('edit', id=task.id, type='task') }}">✏</a></td>
+                        <td class="no_text_decoration"><a class="no_text_decoration" href="{{ url_for('delete', id=task.id, table='ToDo') }}">❌</a></td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    <hr>
+    {% endif %}
+        {% if some_completed %}
+            <h1>Completed</h1>
+            <table class="table_header">
+                <tr>
+                    <th class="status">Edit Status</th>
+                    <th class="">Task</th>
+                    <th class="due-date">Due Date</th>
+                    <th class="status">Edit</th>
+                    <th class="status">Delete</th>
+                </tr>
+                {% for task in tasks %}
+                    {% if task.completed %}
+                        <tr>
+                            <td class="status"><a class="no_text_decoration" href="{{url_for('completed', task_id=task.id) }}">❌ Undo</a></td>
+                            {% if Detail.query.filter_by(to_do_id=task.id).all() %}
+                                <td class="task"><a class="no_text_decoration" href="{{ url_for('task', task_id=task.id, name=task.task_name) }}"><span class="no_text_decoration">🔍</span> {{ task.task_name }}</a></td>
+                            {% else %}
+                                <td class="task"><a class=""><a class="no_text_decoration" href="{{ url_for('task', task_id=task.id, name=task.task_name) }}">{{ task.task_name }}</a></td>
+                            {% endif %}
+                            <td>{{ task.due_date }}</td>
+                            <td class=""><a class="no_text_decoration" href="{{ url_for('edit', id=task.id, type='task') }}">✏</a></td>
+                            <td class=""><a class="no_text_decoration" href="{{ url_for('delete', id=task.id, table='ToDo') }}">❌</a></td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+        {% endif %}
+{% endif %}
+
+</div>
+{% include 'footer.html' %}
+{% endblock %}
